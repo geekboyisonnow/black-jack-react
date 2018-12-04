@@ -8,7 +8,8 @@ class App extends Component {
 
     this.state = {
       deck_id: '',
-      player: []
+      player: [],
+      dealer: []
     }
   }
 
@@ -27,10 +28,22 @@ class App extends Component {
         }/draw/?count=2`
       )
       .then(response => {
-        console.log(response.data.cards)
-
         const newState = {
           player: update(this.state.player, { $push: response.data.cards })
+        }
+
+        this.setState(newState)
+      })
+
+    axios
+      .get(
+        `https://deckofcardsapi.com/api/deck/${
+          this.state.deck_id
+        }/draw/?count=2`
+      )
+      .then(response => {
+        const newState = {
+          dealer: update(this.state.dealer, { $push: response.data.cards })
         }
 
         this.setState(newState)
@@ -66,8 +79,8 @@ class App extends Component {
             <p>Your Cards:</p>
             <p className="player-total">Total 0</p>
             <div className="player-hand">
-              {this.state.player.map(card => {
-                return <img src={card.image} />
+              {this.state.player.map((card, index) => {
+                return <img key={index} src={card.image} />
               })}
             </div>
           </div>
@@ -77,16 +90,9 @@ class App extends Component {
             <p>Dealer Cards:</p>
             <p className="dealer-total">Facedown</p>
             <div className="dealer-hand">
-              <img
-                className="cardback-one"
-                alt="card"
-                src="./images/card back red.png"
-              />
-              <img
-                className="cardback-two"
-                alt="card"
-                src="./images/card back red.png"
-              />
+              {this.state.dealer.map((card, index) => {
+                return <img key={index} src={card.image} />
+              })}
             </div>
           </div>
         </div>
